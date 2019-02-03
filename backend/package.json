@@ -1,0 +1,42 @@
+{
+  "name": "public-chat",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Vlad Trishch",
+  "license": "MIT",
+  "scripts": {
+    "start": "yarn watch & nodemon ./build/bundle.js",
+    "build": "webpack --config ./config/webpack-build.babel.js",
+    "watch": "webpack --config ./config/webpack-watch.babel.js",
+    "run-build": "node ./build/bundle.js",
+    "build-n-run": "yarn build && node ./build/bundle.js",
+    "gen-bundle-stats": "yarn --silent build --profile --json > ./build/bundle-stats.json"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.5",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "module": "^1.2.5",
+    "node-loader": "^0.6.0",
+    "nodemon": "^1.18.3",
+    "require_optional": "^1.0.1",
+    "webpack": "^4.16.3",
+    "webpack-cli": "^3.1.0",
+    "webpack-dev-server": "^3.1.5",
+    "webpack-node-externals": "^1.7.2"
+  },
+  "dependencies": {
+    "async": "^2.6.1",
+    "babel-polyfill": "^6.26.0",
+    "body-parser": "^1.18.3",
+    "dotenv": "^6.0.0",
+    "express": "^4.16.3",
+    "filedownloader": "https://github.com/vlatri/node-filedownloader#stats-update-fixes",
+    "mongoose": "^5.2.6",
+    "morgan": "^1.9.1",
+    "ws": "^6.1.3"
+  }
+}
