@@ -4,20 +4,18 @@ import { fetch } from 'whatwg-fetch'
 import { wsSend } from 'actions/ws'
 import {
   getResourceListRequest,
-  addResourceRequest,
+  addResourcesRequest,
   cancelDownloadRequest,
   pauseDownloadRequest,
   resumeDownloadRequest
 } from 'shared/wsActions'
 
-console.log(pauseDownloadRequest)
-
 
 export const getResourceList = () => dispatch =>
   dispatch(wsSend(getResourceListRequest()))
 
-export const addResource = url => dispatch =>
-  dispatch(wsSend(addResourceRequest({ url })))
+export const addResources = resources => dispatch =>
+  dispatch(wsSend(addResourcesRequest(resources)))
 
 export const cancelDownload = _id => dispatch =>
   dispatch(wsSend(cancelDownloadRequest({ _id })))

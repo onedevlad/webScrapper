@@ -8,7 +8,7 @@ import 'Db'
 import recoverDb from 'Db/recover'
 
 import {
-  addResource,
+  addResources,
   getResourceList,
   pauseDownload,
   cancelDownload,
@@ -17,7 +17,7 @@ import {
 
 import {
   getResourceListRequest,
-  addResourceRequest,
+  addResourcesRequest,
   cancelDownloadRequest,
   pauseDownloadRequest,
   resumeDownloadRequest
@@ -43,7 +43,7 @@ const configureWs = app => {
         const action = JSON.parse(msg)
         const { type, payload } = action
 
-        if(_id == payload._id) {
+        if(payload && (_id == payload._id)) {
           if(type === pauseDownloadRequest.toString())  onPause()
           if(type === cancelDownloadRequest.toString()) onCancel()
         } else bindOnPause(_id, onPause, onCancel)
@@ -56,7 +56,7 @@ const configureWs = app => {
         const { type, payload } = action
 
         switch(type) {
-          case addResourceRequest.toString():     addResource(payload, bindOnPause); break
+          case addResourcesRequest.toString(): addResources(payload, bindOnPause); break
           case getResourceListRequest.toString(): getResourceList(); break
           case resumeDownloadRequest.toString():  resumeDownload(payload, bindOnPause); break
           case pauseDownloadRequest.toString():   pauseDownload(payload); break

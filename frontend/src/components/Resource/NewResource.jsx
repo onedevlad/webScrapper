@@ -3,18 +3,18 @@ import { Input, Button, Badge, InputGroup, InputGroupAddon } from 'reactstrap'
 import { connect } from 'react-redux'
 
 import { unicodeIcons } from 'utils'
-import { addResource } from 'actions'
+import { addResources } from 'actions'
 import TableRow from 'components/TableRow'
 
 
-@connect(null, { addResource })
+@connect(null, { addResources })
 export default class NewResource extends React.Component {
   state = { newUrl: 'https://speed.hetzner.de/100MB.bin' }
 
   addDownload = () => {
-    const { addResource } = this.props
+    const { addResources } = this.props
 
-    addResource(this.state.newUrl)
+    addResources([this.state.newUrl])
     this.setState({ newUrl: '' })
   }
 

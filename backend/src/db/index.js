@@ -9,6 +9,7 @@ const connectDB = uri => {
   mongoose.connect(uri, { useNewUrlParser: true, dbName: 'webScrapper' })
   mongoose.connection.on('error', ({message}) => handleError(`Unable to establish database connection: ${message}`))
   mongoose.set('debug', process.env.NODE_ENV === 'development')
+  mongoose.set('useFindAndModify', false)
 }
 
 connectDB(process.env.MONGOOSE_URI)
