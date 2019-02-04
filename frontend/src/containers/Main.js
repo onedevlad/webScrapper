@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { Snackbar } from 'react-redux-snackbar'
 
 import Header from 'components/Header'
-import Dashboard from 'components/Dashboard'
+import Dashboard from 'containers/Dashboard'
 
 import { wsConnect } from 'actions/ws'
 
@@ -32,5 +32,3 @@ export default class App extends React.Component {
     )
   }
 }
-
-App.defaultProps = {}

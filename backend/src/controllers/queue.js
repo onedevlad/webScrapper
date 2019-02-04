@@ -12,12 +12,22 @@ import {
   setDownloadError,
 } from 'controllers/resource'
 
+// import { validateResource } from 'utils'
+
 
 const q = async.queue(async ({ _id, bindOnPause }, done) => {
   const file = await findResourceById(_id)
-  
-  // Removed from queue before downloading
+
+  // Removed from queue before downloading started
   if(!file) return done()
+
+  // const isResourceValid = await validateResource(file.url)
+  //   .catch(err => {
+  //     setDownloadError(file._id, err)
+  //     return false
+  //   })
+
+  // if(!isResourceValid) return done()
 
   const dl = new Downloader({
     saveto: path.dirname(file.path),
@@ -43,12 +53,6 @@ const q = async.queue(async ({ _id, bindOnPause }, done) => {
     )
   )
 
-  dl.on('error', error => {
-    setDownloadError(file._id, error)
-
-    dl.emit('end', 'ERROR')
-  })
-
   dl.once('end', (status = 'LOADED') => {
     const exit = () => { dl.pause(); done() }
 
@@ -56,7 +60,12 @@ const q = async.queue(async ({ _id, bindOnPause }, done) => {
     else updateDownloadStatus(file._id, status).finally(exit)
   })
 
-  dl.resume()
+  dl.on('error', error => {
+    setDownloadError(file._id, error)
+
+    dl.emit('end', 'ERROR')
+  })
+
 }, process.env.CONCURRENT_DOWNLOADS)
 
 export default q.push

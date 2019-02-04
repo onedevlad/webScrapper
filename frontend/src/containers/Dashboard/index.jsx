@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react'
 
-import FileForm from 'components/FileForm'
-import ResourceList from 'components/ResourceList'
+import FileForm from 'containers/FileForm'
+import ResourceList from 'containers/ResourceList'
 
 
 export default () => (

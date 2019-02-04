@@ -104,6 +104,6 @@ export const updateDownloadStatus = (_id, status) =>
   .catch(handleError)
 
 export const setDownloadError = (_id, error) =>
-  Resource.findOneAndUpdate({ _id }, { error }, { new: true })
+  Resource.findOneAndUpdate({ _id }, { status: 'ERROR', error }, { new: true })
   .then(doc => doc && wsSend(updatedResource(doc)))
   .catch(handleError)

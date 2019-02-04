@@ -1,5 +1,4 @@
 import { createAction } from 'redux-act'
-import { fetch } from 'whatwg-fetch'
 
 import { wsSend } from 'actions/ws'
 import {

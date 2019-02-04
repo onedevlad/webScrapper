@@ -1,10 +1,6 @@
 import React from 'react'
 import { Row, Col, Button } from 'reactstrap'
 import injectSheet from 'react-jss'
-import { connect } from 'react-redux'
-
-import { addResources } from 'actions'
-import { setError } from 'shared/wsActions'
 
 
 const styles = {
@@ -18,42 +14,23 @@ const styles = {
   }
 }
 
-@connect(null, { addResources, setError })
-class FileForm extends React.Component {
-  handleUpload = event => {
-    const file = event.target.files[0]
-    if (!file) return
-    
-    const fileReader = new FileReader()
-    fileReader.onloadend = e => this.readFile(e.target.result)
-    fileReader.readAsText(file)
-  }
-
-  readFile = content => {
-    const { addResources, setError } = this.props
-
-    try {
-      const resourceList = JSON.parse(content)
-      if(!Array.isArray(resourceList)) throw new Exception('Input data is not an array')
-
-      addResources(resourceList)
-    } catch(e) {
-      setError(e.toString())
-    } finally {
-      this.refs.fileInput.value = null
-    }
+@injectSheet(styles)
+export default class FileForm extends React.Component {
+  handleChange = event => {
+    this.props.handleUpload(event.target.files[0])
+    event.target.value = ''
   }
 
   render() {
     const { classes } = this.props
 
-    return(
+    return (
       <Row className={classes.Root}>
         <Col>
           <Button color='primary'>
             <label className={classes.Label}>
               Upload resource list
-              <input type='file' ref='fileInput' hidden onChange={this.handleUpload} />
+              <input type='file' hidden onChange={this.handleChange} />
             </label>
           </Button>
         </Col>
@@ -62,4 +39,3 @@ class FileForm extends React.Component {
   }
 }
 
-export default injectSheet(styles)(FileForm)
