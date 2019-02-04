@@ -12,22 +12,24 @@ import {
   setDownloadError,
 } from 'controllers/resource'
 
-// import { validateResource } from 'utils'
+import { validateResource } from 'utils'
 
 
 const q = async.queue(async ({ _id, bindOnPause }, done) => {
+  await updateDownloadStatus(_id, 'VALIDATING')
+
+  const isResourceValid = await validateResource(_id)
+    .catch(err => {
+      setDownloadError(_id, err)
+      return false
+    })
+
+  if(!isResourceValid) return done()
+
   const file = await findResourceById(_id)
 
   // Removed from queue before downloading started
   if(!file) return done()
-
-  // const isResourceValid = await validateResource(file.url)
-  //   .catch(err => {
-  //     setDownloadError(file._id, err)
-  //     return false
-  //   })
-
-  // if(!isResourceValid) return done()
 
   const dl = new Downloader({
     saveto: path.dirname(file.path),
@@ -54,10 +56,10 @@ const q = async.queue(async ({ _id, bindOnPause }, done) => {
   )
 
   dl.once('end', (status = 'LOADED') => {
-    const exit = () => { dl.pause(); done() }
+    if(status !== 'CANCELLED') updateDownloadStatus(file._id, status)
 
-    if(status === 'CANCELLED') exit()
-    else updateDownloadStatus(file._id, status).finally(exit)
+    dl.pause()
+    done()
   })
 
   dl.on('error', error => {

@@ -11,7 +11,12 @@ const styles = {
   Label: {
     margin: 0,
     cursor: 'pointer',
-  }
+  },
+  Hint: {
+    color: '#aaa',
+    fontSize: '0.75em',
+  },
+
 }
 
 @injectSheet(styles)
@@ -33,6 +38,8 @@ export default class FileForm extends React.Component {
               <input type='file' hidden onChange={this.handleChange} />
             </label>
           </Button>
+          <br/>
+          <span className={classes.Hint}>(Expecting a JSON array of URL strings)</span>
         </Col>
       </Row>
     )

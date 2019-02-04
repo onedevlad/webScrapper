@@ -19,7 +19,7 @@
     "front:build": "yarn front:clean && yarn front:copy & cd frontend && webpack --env=dist",
     "front:clean": "rimraf ./frontend/build/*",
     "front:copy": "copyfiles -f ./frontend/src/index.html ./frontend/src/favicon.ico ./frontend/build",
-    "back:dev": "webpack --config ./backend/config/webpack-watch.babel.js & nodemon ./backend/build/bundle.js",
+    "back:dev": "webpack --config ./backend/config/webpack-watch.babel.js & nodemon ./backend/build/bundle.js --watch backend",
     "back:build": "NODE_ENV=production webpack --config ./backend/config/webpack-build.babel.js",
     "back:run-build": "node ./backend/build/bundle.js"
   },

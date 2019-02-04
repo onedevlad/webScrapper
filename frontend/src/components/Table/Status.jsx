@@ -4,12 +4,13 @@ import { Badge } from 'reactstrap'
 
 const resolveStatusBadgeColor = status => {
   switch(status) {
-    case 'RUNNING': return 'success'
-    case 'ERROR':   return 'danger'
-    case 'PAUSED':  return 'warning'
-    case 'LOADED':  return 'primary'
-    case 'PENDING': return 'secondary'
-    default:        return 'info'
+    case 'RUNNING':    return 'success'
+    case 'ERROR':      return 'danger'
+    case 'PAUSED':     return 'warning'
+    case 'LOADED':     return 'primary'
+    case 'PENDING':    return 'secondary'
+    case 'VALIDATING': return 'warning'
+    default:           return 'info'
   }
 }
 
