@@ -1,26 +1,10 @@
 import config from 'config'
-import { updateResource } from 'actions'
 
-import { wsConnect, wsOpen, wsSend, wsClose, wsDisconnect, wsInvalidCmd } from 'actions/ws'
-import { cancelDownloadSuccess, addResourceSuccess, getResourceListSuccess } from 'actions'
+import { wsConnect, wsOpen, wsSend, wsClose, wsDisconnect } from 'actions/ws'
+import { setError } from 'shared/wsActions'
+
 
 let websocket
-
-const resolveAction = wsMessage => {
-  const {type, payload} = JSON.parse(wsMessage)
-  console.log('received action', type, payload, wsMessage)
-
-  const actions = {
-    'UPDATE_RESOURCE': updateResource,
-    'CANCELLED_DOWNLOAD': cancelDownloadSuccess,
-    'ADDED_RESOURCE': addResourceSuccess,
-    'SET_RESOURCE_LIST': getResourceListSuccess,
-  }
-
-  if(actions[type]) return actions[type](payload)
-  console.log('invalid cmd:', type)
-  return wsInvalidCmd(type)
-}
 
 
 export default ({ dispatch }) => next => action => {
@@ -30,9 +14,13 @@ export default ({ dispatch }) => next => action => {
       websocket.onopen = () => dispatch(wsOpen())
       websocket.onclose = () => {
         dispatch(wsClose())
-        setTimeout(() => dispatch(wsConnect()), 3000)
+        setTimeout(() => dispatch(wsConnect()), config.WS_RECONNECT_TIMEOUT)
       }
-      websocket.onmessage = ({ data }) => dispatch(resolveAction(data))
+      websocket.onmessage = ({ data }) => {
+        try {
+          dispatch(JSON.parse(data))
+        } catch(e) { dispatch(setError(e)) }
+      }
       break
     case wsSend.toString(): websocket.send(JSON.stringify(action.payload)); break
     case wsDisconnect.toString(): websocket.close(); break

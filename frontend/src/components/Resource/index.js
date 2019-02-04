@@ -71,14 +71,26 @@ export default class Resource extends React.Component {
 
   resolveSpeed = speed => `${speed} KB/s`
 
+  resolveUrl = (url, error) => (
+    <Fragment>
+      {
+        error
+        ? <Fragment><Badge color='danger'>{error}</Badge>{' '}</Fragment>
+        : null
+      }
+      { url }
+    </Fragment>
+  )
+
+
   render() {
-    const { status, progress, speed } = this.props
+    const { index, url, error, status, progress, speed } = this.props
 
     return (
       <TableRow
         type='td'
-        index={this.props.index}
-        url={this.props.url}
+        index={index}
+        url={this.resolveUrl(url, error)}
         action={this.resolveControls(status)}
         progress={this.resolveProgress(progress)}
         status={this.resolveStatus(status)}

@@ -13,12 +13,12 @@ module.exports = {
   pureConfig: {
        devtool: 'eval',
     output: {
-      path: path.join(__dirname, '/../dist/assets'),
+      path: path.join(__dirname, '/../build/assets'),
       filename: 'app.js',
       publicPath: defaultSettings.publicPath
     },
     devServer: {
-      contentBase: './src/',
+      contentBase: './frontend/src/',
       historyApiFallback: true,
       hot: true,
       port: defaultSettings.port,
@@ -28,11 +28,12 @@ module.exports = {
     resolve: {
       extensions: ['.js', '.jsx'],
       alias: {
+        shared: `${defaultSettings.appRootPath}/shared/`,
+
         actions: `${defaultSettings.srcPath}/actions/`,
         components: `${defaultSettings.srcPath}/components/`,
         store: `${defaultSettings.srcPath}/store/`,
         reducers: `${defaultSettings.srcPath}/reducers/`,
-        styles: `${defaultSettings.srcPath}/styles/`,
         config: `${defaultSettings.srcPath}/config/` + process.env.REACT_WEBPACK_ENV,
         utils: `${defaultSettings.srcPath}/utils/`,
         'react/lib/ReactMount': 'react-dom/lib/ReactMount'

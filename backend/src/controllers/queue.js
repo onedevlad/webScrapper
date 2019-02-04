@@ -2,12 +2,19 @@ import async from 'async'
 import path from 'path'
 import Downloader from 'filedownloader'
 
+import { updatedResource, setError } from 'shared/wsActions'
+
 import { wsSend } from 'src/server'
-import { updateDownloadStatus, cancelDownload, findById } from 'controllers/resource'
+import {
+  updateDownloadStatus,
+  cancelDownload,
+  findResourceById,
+  setDownloadError,
+} from 'controllers/resource'
 
 
 const q = async.queue(async ({ _id, bindOnPause }, done) => {
-  const file = await findById(_id).catch(err => console.log(err))
+  const file = await findResourceById(_id)
   
   // Removed from queue before downloading
   if(!file) return done()
@@ -27,24 +34,18 @@ const q = async.queue(async ({ _id, bindOnPause }, done) => {
   dl.on('start', () => updateDownloadStatus(file._id, 'RUNNING'))
 
   dl.on('progress', stats =>
-    wsSend({
-      type: 'UPDATE_RESOURCE',
-      payload: {
+    wsSend(
+      updatedResource({
         _id: file._id,
         progress: stats.progress,
         speed: parseFloat(stats.speed),
-      },
-    })
+      })
+    )
   )
 
-  dl.on('error', (err) => {
-    wsSend({
-      type: 'RESOURCE_ERROR',
-      payload: {
-        _id: file._id,
-        msg: err
-      },
-    })
+  dl.on('error', error => {
+    setDownloadError(file._id, error)
+
     dl.emit('end', 'ERROR')
   })
 

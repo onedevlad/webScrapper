@@ -1,31 +1,31 @@
 import { createReducer } from 'redux-act'
 
 import {
-  addResourceSuccess,
-  getResourceListSuccess,
-  cancelDownloadSuccess,
-  updateResource,
-} from 'actions'
+  addedResource,
+  setResourceList,
+  updatedResource,
+  cancelledDownload,
+} from 'shared/wsActions'
+
 
 const initialState = {}
 
 const reduceCollection = arr => arr.reduce((acc, v) => ({...acc, [v._id]: v}), {})
 
-
 export default createReducer({
-  [addResourceSuccess]: (state, payload) => ({
+  [addedResource]: (state, payload) => ({
     ...state,
     ...reduceCollection([payload]),
   }),
-  [getResourceListSuccess]: (state, payload) => ({
+  [setResourceList]: (state, payload) => ({
     ...state,
     ...reduceCollection(payload),
   }),
-  [cancelDownloadSuccess]: (state, payload) =>
+  [cancelledDownload]: (state, payload) =>
     reduceCollection(
       Object.values(state).filter(resource => resource._id !== payload._id)
     ),
-  [updateResource]: (state, payload) => ({
+  [updatedResource]: (state, payload) => ({
     ...state,
     [payload._id]: {
       ...state[payload._id],

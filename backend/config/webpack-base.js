@@ -3,11 +3,14 @@ import dotenv from 'dotenv'
 import nodeExternals from 'webpack-node-externals'
 
 dotenv.config()
+
 const rootPath = path.join(__dirname, '../')
+const appRootPath = path.join(rootPath, '../')
 const srcPath = path.join(rootPath, 'src')
 
-const withRoot = folder => path.resolve(rootPath, folder)
+const withAppRoot = folder => path.resolve(appRootPath, folder)
 const withSrc = folder => path.resolve(srcPath, folder)
+
 
 export default {
   mode: process.env.NODE_ENV,
@@ -32,11 +35,10 @@ export default {
   },
   resolve: {
     alias: {
-      output: withRoot('output'),
+      shared: withAppRoot('shared'),
 
       src: withSrc(''),
       Db: withSrc('db'),
-      routes: withSrc('routes'),
       controllers: withSrc('controllers'),
       models: withSrc('models'),
       utils: withSrc('utils'),

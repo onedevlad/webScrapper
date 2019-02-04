@@ -51,6 +51,7 @@ class ResourceList extends React.Component {
                     _id={resource._id}
                     url={resource.url}
                     status={resource.status}
+                    error={resource.error}
                     speed={resource.speed || 0}
                     progress={resource.progress || 0}
                   />

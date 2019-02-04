@@ -1,3 +1,4 @@
+import path from 'path'
 import http from 'http'
 import WebSocket from 'ws'
 import events from 'events'
@@ -14,8 +15,16 @@ import {
   resumeDownload,
 } from 'controllers/resource'
 
+import {
+  getResourceListRequest,
+  addResourceRequest,
+  cancelDownloadRequest,
+  pauseDownloadRequest,
+  resumeDownloadRequest
+} from 'shared/wsActions'
 
-const app = express()
+import { handleError } from 'utils'
+
 
 const eventsEmitter = new events.EventEmitter()
 export const wsSend = payload => eventsEmitter.emit('WS_SEND', JSON.stringify(payload))
@@ -30,32 +39,37 @@ const configureWs = app => {
     recoverDb()
 
     const bindOnPause = (_id, onPause, onCancel) => ws.once('message', msg => {
-      const action = JSON.parse(msg)
-      const { type, payload } = action
+      try {
+        const action = JSON.parse(msg)
+        const { type, payload } = action
 
-      if(_id == payload._id) {
-        if(type === 'PAUSE_DOWNLOAD') onPause()
-        if(type === 'CANCEL_DOWNLOAD') onCancel()
-      } else bindOnPause(_id, onPause, onCancel)
+        if(_id == payload._id) {
+          if(type === pauseDownloadRequest.toString())  onPause()
+          if(type === cancelDownloadRequest.toString()) onCancel()
+        } else bindOnPause(_id, onPause, onCancel)
+      } catch (e) { handleError(e) }
     })
 
     ws.on('message', msg => {
-      const action = JSON.parse(msg)
-      const { type, payload } = action
+      try {
+        const action = JSON.parse(msg)
+        const { type, payload } = action
 
-      switch(type) {
-        case 'ADD_RESOURCE': addResource(payload, bindOnPause); break
-        case 'GET_RESOURCE_LIST': getResourceList(); break
-        case 'RESUME_DOWNLOAD': resumeDownload(payload, bindOnPause); break
-        case 'PAUSE_DOWNLOAD': pauseDownload(payload); break
-        case 'CANCEL_DOWNLOAD': cancelDownload(payload); break
-      }
+        switch(type) {
+          case addResourceRequest.toString():     addResource(payload, bindOnPause); break
+          case getResourceListRequest.toString(): getResourceList(); break
+          case resumeDownloadRequest.toString():  resumeDownload(payload, bindOnPause); break
+          case pauseDownloadRequest.toString():   pauseDownload(payload); break
+          case cancelDownloadRequest.toString():  cancelDownload(payload); break
+          default: handleError(`Unrecognised command: ${type}`)
+        }
+      } catch(e) { handleError(e) }
     })
 
     eventsEmitter.once('DB_RECOVERY_RESUME_DOWNLOAD', docs =>
       docs.forEach(({ _id }) =>
         resumeDownload({ _id }, bindOnPause)
-        )
+      )
     )
     eventsEmitter.on('WS_SEND', msg => ws.readyState === 1 && ws.send(msg))
   })
@@ -65,4 +79,13 @@ const configureWs = app => {
   )
 }
 
+const configureHttp = app => {
+  app.use(express.static(path.join(__dirname, '../../frontend/build')))
+  app.listen(process.env.SERVER_HTTP_PORT,
+    () => console.log(`HTTP server is running on port ${process.env.SERVER_HTTP_PORT}`)
+  )
+}
+
+const app = express()
 configureWs(app)
+configureHttp(app)

@@ -1,6 +1,7 @@
 import React from 'react'
 import { Container, Row, Col } from 'reactstrap'
 import { connect } from 'react-redux'
+import { Snackbar } from 'react-redux-snackbar'
 
 import Header from 'components/Header'
 import Dashboard from 'components/Dashboard'
@@ -26,6 +27,7 @@ export default class App extends React.Component {
           ? <Dashboard />
           : <h5>Establishing WebSocket connection. Please wait...</h5>
         }
+        <Snackbar />
       </Container>
     )
   }
