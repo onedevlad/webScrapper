@@ -6,7 +6,8 @@ import injectSheet from 'react-jss'
 const styles = {
   Root: {
     textAlign: 'left !important',
-    wordWrap: 'break-word',
+    wordBreak: 'break-all',
+    // wordWrap: 'break-word',
   }
 }
 
