@@ -1,5 +1,8 @@
 # WebScrapper
 
+To install the dependencies, run
+> yarn
+
 To start the app, run
 > yarn start
 
