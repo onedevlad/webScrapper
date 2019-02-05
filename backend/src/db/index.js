@@ -1,13 +1,15 @@
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
 
-import { handleError } from 'util'
 
 dotenv.config()
 
 const connectDB = uri => {
   mongoose.connect(uri, { useNewUrlParser: true, dbName: 'webScrapper' })
-  mongoose.connection.on('error', ({message}) => handleError(`Unable to establish database connection: ${message}`))
+  mongoose.connection.on('error', ({ message }) => {
+    console.log(`Unable to establish database connection: ${message}`)
+    process.exit()
+  })
   mongoose.set('debug', process.env.NODE_ENV === 'development')
   mongoose.set('useFindAndModify', false)
 }
