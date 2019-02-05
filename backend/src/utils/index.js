@@ -28,6 +28,6 @@ export const validateResource = _id => new Promise(async (resolve, reject) => {
     resolve(true)
   })
 
-  request.on('error', err => console.log(err) || reject('Unable to connect'))
+  request.on('error', err => reject('Invalid URL'))
   request.end()
 })
