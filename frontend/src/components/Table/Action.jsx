@@ -20,7 +20,7 @@ export default ({ status, resumeHandler, pauseHandler, removeHandler }) => {
       }
       {' '}
       {
-        status !== 'NEW'
+        status !== 'NEW' && status !== 'VALIDATING'
           && <Button color='danger' size='sm' onClick={removeHandler}>{unicodeIcons.stop}</Button>
       }
     </td>

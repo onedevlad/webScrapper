@@ -25,7 +25,7 @@ const InputForm = ({ newUrl, handleUrlInput, addDownload }) => (
 
 @connect(null, { addResources })
 export default class NewResource extends React.Component {
-  state = { newUrl: 'https://speed.hetzner.de/100MB.bin' }
+  state = { newUrl: '' }
 
   addDownload = () => {
     const { addResources } = this.props
