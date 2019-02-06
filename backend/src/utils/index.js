@@ -14,6 +14,7 @@ export const handleError = msg => wsSend(setError(msg.toString()))
 export const validateResource = _id => new Promise(async (resolve, reject) => {
   const resource = await findResourceById(_id).catch(handleError)
   if(!resource) return reject()
+  if(resource.status === 'PAUSED') return resolve(true)
 
   const { hostname, path, port, protocol } = url.parse(resource.url)
 

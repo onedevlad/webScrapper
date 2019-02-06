@@ -45,15 +45,17 @@ const q = async.queue(async ({ _id, bindOnPause }, done) => {
 
   dl.on('start', () => updateDownloadStatus(file._id, 'RUNNING'))
 
-  dl.on('progress', stats =>
+  dl.on('progress', ({ progress, speed }) => {
+    if(parseFloat(progress) > 100) progress = 0
+
     wsSend(
       updatedResource({
         _id: file._id,
-        progress: stats.progress,
-        speed: parseFloat(stats.speed),
+        progress: parseFloat(progress),
+        speed: parseFloat(speed),
       })
     )
-  )
+  })
 
   dl.once('end', (status = 'LOADED') => {
     if(status !== 'CANCELLED') updateDownloadStatus(file._id, status)
